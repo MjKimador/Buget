@@ -53,20 +53,22 @@ export default function Home() {
 // Transfer function//
 const transferCUSD = async (address: string, userAddress: string) => {
   if (window.ethereum) {
-    // Get connected accounts, if not connected request connnection.
-    //const localNodeUrl = 'http://127.0.0.1:4040'; // Replace with your local node's URL
-    //const provider = new JsonRpcProvider(localNodeUrl);
     const provider = new BrowserProvider(window.ethereum);
-    const signer = provider.getSigner(userAddress);
-
-    // The current selected account out of the connected accounts.
+    const signer = await provider.getSigner(userAddress); // Await the promise resolution
 
     let abi = ["function transfer(address to, uint256 value)"];
-    const CUSDContract = new Contract(CUSD_ADDRESS, abi, signer);
-    let txn = await CUSDContract.transfer(address, parseEther(`1`));
-    let receipt = await txn.wait();
+    const CUSDContract = new Contract(CUSD_ADDRESS, abi, signer); // Now signer is a JsonRpcSigner
+    try {
+      let txn = await CUSDContract.transfer(address, parseEther(`1`));
+      let receipt = await txn.wait();
+      // Handle the receipt or return it
+    } catch (error) {
+      // Handle any errors that might occur during the transaction
+      console.error("Error during transfer:", error);
+    }
   }
 };
+
 
   const handleOptionClick = (option: string) => {
     setSelectedOption(option);

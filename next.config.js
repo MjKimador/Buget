@@ -4,7 +4,8 @@ const nextConfig = {
   swcMinify: true,
   webpack: (config) => {
     config.resolve.fallback = {
-      fs: false
+      fs: false,
+      async_hooks: false
     }
     return config
   }
